@@ -11,6 +11,7 @@ RUN apt-get update && \
       openssl \
       libssl1.1 \
       libssl-dev \
+      procps \
       gdb \
       less \
       && \
