@@ -1,15 +1,22 @@
-.PHONY: help build configure make make-install clean
-
-export NGX_DEBUG := YES
+.PHONY: help setup dependencies build configure make make-install clean
 
 help:
 	@cat $(firstword $(MAKEFILE_LSIT))
+
+setup: \
+	dependencies
+
+dependencies:
+	id -u nginx
+	id -g nginx
+	test -d deps/nginx
 
 build: \
 	configure \
 	make \
 	make-install
 
+# http://nginx.org/en/docs/configure.html
 configure: deps/nginx
 	cd $< && ./auto/configure \
 		--with-debug \
@@ -21,11 +28,6 @@ configure: deps/nginx
 		--http-log-path=/var/log/nginx/access.log \
 		--pid-path=/var/run/nginx.pid \
 		--lock-path=/var/run/nginx.lock \
-		--http-client-body-temp-path=/var/cache/nginx/client_temp \
-		--http-proxy-temp-path=/var/cache/nginx/proxy_temp \
-		--http-fastcgi-temp-path=/var/cache/nginx/fastcgi_temp \
-		--http-uwsgi-temp-path=/var/cache/nginx/uwsgi_temp \
-		--http-scgi-temp-path=/var/cache/nginx/scgi_temp \
 		--user=nginx \
 		--group=nginx \
 		--with-compat \
